@@ -51,6 +51,19 @@
     <Compile Include="ChangePassword.Designer.cs">
       <DependentUpon>ChangePassword.cs</DependentUpon>
     </Compile>
+    <Compile Include="Enter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Enter.Designer.cs">
+      <DependentUpon>Enter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MyClass.cs" />
+    <Compile Include="MyKey.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MyKey.Designer.cs">
+      <DependentUpon>MyKey.cs</DependentUpon>
+    </Compile>
     <Compile Include="WriteToZero.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -61,6 +74,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="ChangePassword.resx">
       <DependentUpon>ChangePassword.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Enter.resx">
+      <DependentUpon>Enter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MyKey.resx">
+      <DependentUpon>MyKey.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WriteToZero.resx">
       <DependentUpon>WriteToZero.cs</DependentUpon>

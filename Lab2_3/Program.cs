@@ -16,7 +16,7 @@ namespace Lab2_3
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new WriteToZero());
+            Application.Run(new Enter());
         }
     }
 }

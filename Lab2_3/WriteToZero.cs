@@ -17,13 +17,16 @@ namespace Lab2_3
 {
     public partial class WriteToZero : Form
     {
-        public WriteToZero()
+        public WriteToZero(string kl)
         {
             InitializeComponent();
-                //поиск внешних накопителей
-            
+            //поиск внешних накопителей 
+            key = kl;
+            labelkey.Text = key;
         }
-        public static byte[] buffer0sector;
+        string key;
+        MyClass myclass = new MyClass();
+        /*public static byte[] buffer0sector;
         const string alf = "qwertyuiopasdfghjklzxcvbnm0123456789";
         const string fileway = "password.txt";
 
@@ -38,12 +41,12 @@ namespace Lab2_3
         int securityAttributes,
         [MarshalAs(UnmanagedType.U4)] FileMode creationDisposition,
         [MarshalAs(UnmanagedType.U4)] FileAttributes fileAttributes,
-        IntPtr template);
+        IntPtr template);*/
 
         private void Form1_Load(object sender, EventArgs e)
         {
             
-            string mydrive;
+            /*string mydrive;
             DriveInfo[] allDrives = DriveInfo.GetDrives();
             foreach (DriveInfo d in allDrives)
             {
@@ -57,13 +60,13 @@ namespace Lab2_3
             if (comboBoxdisk.Items.Count == 0)
             {
                 comboBoxdisk.Items.Add("Внешние носители отсутствуют");
-            }
+            }*/
         }
         private void ReadZeroSector()
         {
-
+            string s = myclass.SectorOpen();
             //настройка функции из кернел.длл
-            string path = "\\\\.\\" + comboBoxdisk.Text.Remove(2);
+            /*string path = "\\\\.\\" + comboBoxdisk.Text.Remove(2);
             SafeFileHandle driveHandle = CreateFile(path, FileAccess.Read, FileShare.ReadWrite, 0, FileMode.Open, FileAttributes.Normal, IntPtr.Zero);
             using (FileStream disk = new FileStream(driveHandle, FileAccess.Read))
             {
@@ -75,6 +78,11 @@ namespace Lab2_3
                     dataGridView1.Rows.Add((char)buffer0sector[i * 8 + 0], (char)buffer0sector[i * 8 + 1], (char)buffer0sector[i * 8 + 2], (char)buffer0sector[i * 8 + 3],
                         (char)buffer0sector[i * 8 + 4], (char)buffer0sector[i * 8 + 5], (char)buffer0sector[i * 8 + 6], (char)buffer0sector[i * 8 + 7]);
                 }
+            }*/
+            for (int i = 0; i < 64; i++)
+            {
+                dataGridView1.Rows.Add((char)MyClass.buffer0sector[i * 8 + 0], (char)MyClass.buffer0sector[i * 8 + 1], (char)MyClass.buffer0sector[i * 8 + 2], (char)MyClass.buffer0sector[i * 8 + 3],
+                    (char)MyClass.buffer0sector[i * 8 + 4], (char)MyClass.buffer0sector[i * 8 + 5], (char)MyClass.buffer0sector[i * 8 + 6], (char)MyClass.buffer0sector[i * 8 + 7]);
             }
         }
         private void button2_Click(object sender, EventArgs e)
@@ -84,7 +92,7 @@ namespace Lab2_3
             //найдём сумму байт в секторах с 384 по 416 чтобы узнать есть ли там пароль
             int summa = 0;
             for (int i = 384; i < 416; i++)
-                summa += buffer0sector[i];
+                summa += MyClass.buffer0sector[i];
             //если сумма отличается от нуля, значит пароль в нулевом секторе есть
             if (summa == 0)
             {
@@ -107,7 +115,7 @@ namespace Lab2_3
             key = s.ToString();
             return key;
         }*/
-        private string Encryption(string pass, string key) //функция шифрования
+       /* private string Encryption(string pass, string key) //функция шифрования
         {
 
             res = string.Empty;
@@ -127,45 +135,53 @@ namespace Lab2_3
                 res += alf[z];
             }
             return res;
-        }
+        }*/
         private void button1_Click(object sender, EventArgs e)
         {
+            ChangePassword chpass = new ChangePassword(key);
+            chpass.Show();
+            this.Hide();
             //@"\\.\G:",
-            string path = "\\\\.\\" + comboBoxdisk.Text.Remove(2);
-            SafeFileHandle driveHandle = CreateFile(path, FileAccess.Read, FileShare.ReadWrite, 0, FileMode.Open, FileAttributes.Normal, IntPtr.Zero);
-            using (FileStream disk = new FileStream(driveHandle, FileAccess.Read))
-            {
-                buffer0sector = new byte[512];
-                disk.Read(buffer0sector, 0, 512);
-            }
-            //найдём сумму байт в секторах с 384 по 416 чтобы узнать есть ли там пароль
-            int summa = 0;
-            for (int i = 384; i < 416; i++)
-                summa += buffer0sector[i];
-            //если сумма отличается от нуля, значит пароль в нулевом секторе есть
-            if (summa > 0)
-            {
-                //пароль есть и его нужно проверить и изменить
-                //создаем новое окно
-                this.Hide();
-                ChangePassword f = new ChangePassword(path); //Вывод на экран окна успешного ввода
-                f.Show();
-            }
-            else
-            {
-                SafeFileHandle driveHandleRead = CreateFile(path, FileAccess.Write, FileShare.ReadWrite, 0, FileMode.Open, FileAttributes.Normal, IntPtr.Zero);
-                {
-                    using (FileStream disk = new FileStream(driveHandleRead, FileAccess.Write))
-                    {
-                        String hashpassword = Encryption(textBox1.Text, "abc");
-                        for (int i = 0; i < hashpassword.Length; i++)
-                            buffer0sector[384 + i] = (byte)hashpassword[i];
+            /* string path = "\\\\.\\" + comboBoxdisk.Text.Remove(2);
+             SafeFileHandle driveHandle = CreateFile(path, FileAccess.Read, FileShare.ReadWrite, 0, FileMode.Open, FileAttributes.Normal, IntPtr.Zero);
+             using (FileStream disk = new FileStream(driveHandle, FileAccess.Read))
+             {
+                 buffer0sector = new byte[512];
+                 disk.Read(buffer0sector, 0, 512);
+             }
+             //найдём сумму байт в секторах с 384 по 416 чтобы узнать есть ли там пароль
+             int summa = 0;
+             for (int i = 384; i < 416; i++)
+                 summa += buffer0sector[i];
+             //если сумма отличается от нуля, значит пароль в нулевом секторе есть
+             if (summa > 0)
+             {
+                 //пароль есть и его нужно проверить и изменить
+                 //создаем новое окно
+                 this.Hide();
+                 ChangePassword f = new ChangePassword(path); //Вывод на экран окна успешного ввода
+                 f.Show();
+             }
+             else
+             {
+                 SafeFileHandle driveHandleRead = CreateFile(path, FileAccess.Write, FileShare.ReadWrite, 0, FileMode.Open, FileAttributes.Normal, IntPtr.Zero);
+                 {
+                     using (FileStream disk = new FileStream(driveHandleRead, FileAccess.Write))
+                     {
+                         String hashpassword = Encryption(textBox1.Text, "abc");
+                         for (int i = 0; i < hashpassword.Length; i++)
+                             buffer0sector[384 + i] = (byte)hashpassword[i];
 
-                        disk.Write(buffer0sector, 0, 512);
-                        MessageBox.Show("Пароль записан в нулевой сектор!");
-                    }
-                }
-            }
+                         disk.Write(buffer0sector, 0, 512);
+                         MessageBox.Show("Пароль записан в нулевой сектор!");
+                     }
+                 }
+             }*/
+        }
+
+        private void WriteToZero_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Application.Exit();
         }
     }
       

@@ -16,13 +16,15 @@ namespace Lab2_3
 {
     public partial class ChangePassword : Form
     {
-        public ChangePassword(string drive)
+        public ChangePassword(string k)
         {
             InitializeComponent();
-            this.path = drive;
+            this.oldkey = k;
         }
-        string path;
-        const string alf = "qwertyuiopasdfghjklzxcvbnm0123456789";
+        private string oldkey;
+        MyClass myclass;
+        int one = 3;
+        /*const string alf = "qwertyuiopasdfghjklzxcvbnm0123456789";
 
         private string res;
         private int k, x, z;
@@ -57,14 +59,36 @@ namespace Lab2_3
                 res += alf[z];
             }
             return res;
-        }
+        }*/
         private void button1_Click(object sender, EventArgs e)
         {
             if (textBox1.Text == "" || textBox2.Text=="")
             {
                 MessageBox.Show("Заполните все поля");
             }
-            string oldpassword = Encryption(textBox1.Text, "abc");
+            string newkey = "";
+            string oldpass = textBox1.Text;
+            string newpass = textBox2.Text;
+            myclass = new MyClass();
+
+            if (myclass.ComparePass(oldpass, oldkey))
+            {
+                newkey = myclass.SecterSave(newpass);
+                WriteToZero chmain = new WriteToZero(newkey);
+                chmain.Show();
+                this.Hide();
+            }
+            else
+            {
+                one--;
+                MessageBox.Show(String.Format("Неправильный пароль или ключ!\nОсталось попыток: {0}", one));
+                if (one == 0)
+                    Application.Exit();
+            }
+
+            textBox1.Text = "";
+            textBox2.Text = "";
+            /*string oldpassword = Encryption(textBox1.Text, "abc");
 
             //защита от подмены флешки путем перечитывания нулевого сектора
             //читаем информацию из нулевого сектора для проверки есть ли пароль
@@ -114,8 +138,13 @@ namespace Lab2_3
                             this.Close();
                         }
                     }
-                }
+                }*/
             
+        }
+
+        private void ChangePassword_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Application.Exit();
         }
     }
 }
